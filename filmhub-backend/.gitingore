@@ -1,0 +1,47 @@
+# Virtual environments
+venv/
+.env/
+.env.*
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Build and distribution artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Django/SQLite local databases
+*.sqlite3
+
+# Coverage and test outputs
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Logs and temporary files
+*.log
+tmp/
+*.tmp
+*.swp
+*.swo
+
+# IDE / editor settings
+.vscode/
+.idea/
+*.iml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Local tooling / miscellaneous
+.cache/
+.mypy_cache/
+.pytype/
+.pyre/

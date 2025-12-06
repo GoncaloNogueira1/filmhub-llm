@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: filmhub_db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-filmhub_db}
+      POSTGRES_USER: ${DB_USER:-filmhub_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-filmhub_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - filmhub_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-filmhub_user}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./filmhub-backend
+      dockerfile: Dockerfile
+    container_name: filmhub_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./filmhub-backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=${DB_NAME:-filmhub_db}
+      - DB_USER=${DB_USER:-filmhub_user}
+      - DB_PASSWORD=${DB_PASSWORD:-filmhub_password}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DEBUG=${DEBUG:-True}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - filmhub_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: filmhub_frontend
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+    networks:
+      - filmhub_network
+
+volumes:
+  postgres_data:
+
+networks:
+  filmhub_network:
+    driver: bridge
