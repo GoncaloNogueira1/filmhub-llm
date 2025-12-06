@@ -17,8 +17,19 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from movies.views import search_movies
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('authentication.urls')),  # ← Adicionar esta linha
+    path('api/auth/', include('authentication.urls')),
+    path('api/movies/', include('movies.urls')),
+    path('api/movies/', include('ratings.urls')),
+    path('api/search/', search_movies, name='search'),
+    path('api/recommendations/', include('recommendations.urls')),
+    path('api/watchlist/', include('watchlist.urls')),  # ← Add this
 ]
+
+
+
+
+
