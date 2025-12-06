@@ -7,3 +7,4 @@ djangorestframework-simplejwt
 pytest
 pytest-django
 pytest-cov
+requests
