@@ -3,7 +3,8 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
-
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 class RegisterSerializer(serializers.ModelSerializer):
     """Serializer for user registration"""
@@ -62,7 +63,9 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get('password')
         
         if not email or not password:
-            raise serializers.ValidationError('Must include "email" and "password".')
+            raise serializers.ValidationError({
+                'non_field_errors': ['Must include "email" and "password".']
+            })
         
         user = authenticate(
             request=self.context.get('request'),
@@ -71,10 +74,14 @@ class LoginSerializer(serializers.Serializer):
         )
         
         if not user:
-            raise serializers.ValidationError('Invalid email or password.')
+            raise serializers.ValidationError({
+                'non_field_errors': ['Invalid email or password.']
+            })
         
         if not user.is_active:
-            raise serializers.ValidationError('User account is disabled.')
+            raise serializers.ValidationError({
+                'non_field_errors': ['User account is disabled.']
+            })
         
         attrs['user'] = user
         return attrs
@@ -197,12 +204,6 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         if User.objects.exclude(pk=user.pk).filter(username=value).exists():
             raise serializers.ValidationError("This username is already taken.")
         return value
-
-
-# ========== LOGOUT SERIALIZER ==========
-
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.exceptions import TokenError
 
 class LogoutSerializer(serializers.Serializer):
     """Serializer for logout - blacklists refresh token"""

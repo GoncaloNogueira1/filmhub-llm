@@ -1,0 +1,128 @@
+.movies-page {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .movies-page {
+    padding: 1.5rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .movies-page {
+    padding: 1.5rem 2rem;
+  }
+}
+
+.movies-search {
+  margin-bottom: 2rem;
+}
+
+.movies-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 0;
+}
+
+.movies-loading-content {
+  text-align: center;
+}
+
+.movies-spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid rgb(59 130 246);
+  border-top-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.movies-loading-text {
+  color: rgb(209 213 219);
+}
+
+.movies-empty {
+  text-align: center;
+  padding: 6rem 0;
+}
+
+.movies-empty-text {
+  color: rgb(156 163 175);
+  font-size: 1.125rem;
+}
+
+.movies-results {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: rgb(156 163 175);
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .movies-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .movies-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .movies-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .movies-grid {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1536px) {
+  .movies-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+.movies-loading-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.movies-loading-more-spinner {
+  animation: spin 1s linear infinite;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid rgb(59 130 246);
+  border-top-color: transparent;
+}
+
+.movies-infinite-scroll {
+  height: 2.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+

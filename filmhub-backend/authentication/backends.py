@@ -7,8 +7,9 @@ User = get_user_model()
 class EmailBackend(ModelBackend):
     """Authenticate using email instead of username"""
     
-    def authenticate(self, request, username=None, password=None, **kwargs):
-        email = kwargs.get('email', username)
+    def authenticate(self, request, username=None, password=None, email=None, **kwargs):
+        # Support both email as keyword arg and username (which might be email)
+        email = email or kwargs.get('email') or username
         if email is None or password is None:
             return None
         

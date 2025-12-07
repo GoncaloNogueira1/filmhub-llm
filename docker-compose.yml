@@ -25,7 +25,6 @@ services:
       context: ./filmhub-backend
       dockerfile: Dockerfile
     container_name: filmhub_backend
-    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./filmhub-backend:/app
     ports:

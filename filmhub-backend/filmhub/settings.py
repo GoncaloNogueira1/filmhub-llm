@@ -78,11 +78,24 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',  # Disabled for API (using JWT instead)
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# CSRF Configuration for API
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+]
+
+# For API endpoints using JWT, CSRF is not needed since we're not using session auth
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = False  # Frontend needs to read CSRF token
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 
 ROOT_URLCONF = "filmhub.urls"
@@ -164,10 +177,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CORS settings - adjust for your frontend
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React default
-    "http://localhost:8080",  # Vue default
+    'http://localhost:5173',
+    'http://localhost:5174',  # Vite dev server
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
 ]
-
 # For development only - remove in production
 CORS_ALLOW_CREDENTIALS = True
 
@@ -186,6 +200,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }
 
 # SimpleJWT settings

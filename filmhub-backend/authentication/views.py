@@ -8,9 +8,9 @@ from .serializers import (
     RegisterSerializer, 
     LoginSerializer,
     UserProfileSerializer,
-    UserProfileUpdateSerializer
+    UserProfileUpdateSerializer,
+    LogoutSerializer  # ← Add this import
 )
-
 
 class RegisterView(APIView):
     """API endpoint for user registration"""
@@ -158,11 +158,6 @@ def login_user(request):
     """Wrapper for LoginView"""
     return LoginView.as_view()(request)
 
-
-# ========== LOGOUT VIEW ==========
-
-from .serializers import LogoutSerializer
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
@@ -171,37 +166,33 @@ def logout_view(request):
     
     POST /api/auth/logout/
     Body (optional): {"refresh": "refresh_token_here"}
-    """
-    refresh_token = request.data.get('refresh')
     
-    if refresh_token:
-        # Try to blacklist the token
-        serializer = LogoutSerializer(data=request.data)
-        
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    'message': 'Successfully logged out',
-                    'detail': 'Refresh token has been blacklisted.'
-                },
-                status=status.HTTP_205_RESET_CONTENT
-            )
-        else:
-            # Invalid token, but still logout
-            return Response(
-                {
-                    'message': 'Logged out',
-                    'detail': 'Invalid token provided, but logged out anyway.'
-                },
-                status=status.HTTP_205_RESET_CONTENT
-            )
-    else:
-        # No refresh token provided
+    Returns:
+        205 Reset Content - Standard logout response
+    
+    Note:
+        - Blacklists the refresh token if provided
+        - Access token remains valid until expiration (stateless JWT)
+        - Frontend should delete both access and refresh tokens
+    """
+    serializer = LogoutSerializer(data=request.data)
+    
+    if serializer.is_valid():
+        serializer.save()
         return Response(
             {
-                'message': 'Logged out',
-                'detail': 'No refresh token provided.'
+                'message': 'Successfully logged out',
+                'detail': 'Refresh token has been blacklisted. Please remove tokens from client storage.'
             },
             status=status.HTTP_205_RESET_CONTENT
         )
+    
+    # If no refresh token provided, still return success
+    # (user deleted tokens on frontend)
+    return Response(
+        {
+            'message': 'Logged out',
+            'detail': 'No refresh token provided. Ensure tokens are removed from client.'
+        },
+        status=status.HTTP_205_RESET_CONTENT
+    )
