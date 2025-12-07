@@ -66,7 +66,7 @@ class TestAddToWatchlist:
     
     def test_add_to_watchlist_success(self, auth_client, user, sample_movies):
         """Test adding a movie to watchlist"""
-        url = '/api/watchlist/add/'
+        url = '/api/watchlist/'  # MUDADO: removido /add/
         data = {'movie_id': sample_movies[0].id}
         
         response = auth_client.post(url, data, format='json')
@@ -83,7 +83,7 @@ class TestAddToWatchlist:
     
     def test_add_duplicate_returns_200(self, auth_client, user, sample_movies):
         """Test adding same movie twice doesn't create duplicate"""
-        url = '/api/watchlist/add/'
+        url = '/api/watchlist/'  # MUDADO
         data = {'movie_id': sample_movies[0].id}
         
         # Add first time
@@ -103,7 +103,7 @@ class TestAddToWatchlist:
     
     def test_add_nonexistent_movie_returns_400(self, auth_client):
         """Test adding non-existent movie returns error"""
-        url = '/api/watchlist/add/'
+        url = '/api/watchlist/'  # MUDADO
         data = {'movie_id': 99999}
         
         response = auth_client.post(url, data, format='json')
@@ -113,7 +113,7 @@ class TestAddToWatchlist:
     
     def test_add_requires_authentication(self, api_client, sample_movies):
         """Test that authentication is required"""
-        url = '/api/watchlist/add/'
+        url = '/api/watchlist/'  # MUDADO
         data = {'movie_id': sample_movies[0].id}
         
         response = api_client.post(url, data, format='json')
@@ -122,7 +122,7 @@ class TestAddToWatchlist:
     
     def test_add_missing_movie_id(self, auth_client):
         """Test adding without movie_id returns error"""
-        url = '/api/watchlist/add/'
+        url = '/api/watchlist/'  # MUDADO
         data = {}
         
         response = auth_client.post(url, data, format='json')

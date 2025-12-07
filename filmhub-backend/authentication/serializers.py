@@ -47,6 +47,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
+
 class LoginSerializer(serializers.Serializer):
     """Serializer for user login with email and password"""
     email = serializers.EmailField(required=True)
@@ -94,3 +95,130 @@ class LoginSerializer(serializers.Serializer):
                 'access': str(refresh.access_token),
             }
         }
+
+
+# ========== PROFILE SERIALIZERS ==========
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    """Serializer for user profile"""
+    full_name = serializers.CharField(read_only=True)
+    
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'full_name',
+            'age',
+            'bio',
+            'favorite_genres',
+            'profile_picture',
+            'email_notifications',
+            'date_joined',
+        ]
+        read_only_fields = ['id', 'email', 'date_joined', 'full_name']
+    
+    def validate_age(self, value):
+        """Validate age is reasonable"""
+        if value is not None:
+            if value < 13:
+                raise serializers.ValidationError("You must be at least 13 years old.")
+            if value > 120:
+                raise serializers.ValidationError("Please enter a valid age.")
+        return value
+    
+    def validate_favorite_genres(self, value):
+        """Validate favorite_genres format"""
+        if not isinstance(value, dict):
+            raise serializers.ValidationError("favorite_genres must be a dictionary.")
+        
+        # Validate values are between 0 and 1
+        for genre_id, weight in value.items():
+            if not isinstance(weight, (int, float)):
+                raise serializers.ValidationError(
+                    f"Genre weight for '{genre_id}' must be a number."
+                )
+            if not 0 <= weight <= 1:
+                raise serializers.ValidationError(
+                    f"Genre weight for '{genre_id}' must be between 0 and 1."
+                )
+        
+        return value
+
+
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    """Serializer for updating user profile (excludes read-only fields)"""
+    
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'first_name',
+            'last_name',
+            'age',
+            'bio',
+            'favorite_genres',
+            'profile_picture',
+            'email_notifications',
+        ]
+    
+    def validate_age(self, value):
+        """Validate age is reasonable"""
+        if value is not None:
+            if value < 13:
+                raise serializers.ValidationError("You must be at least 13 years old.")
+            if value > 120:
+                raise serializers.ValidationError("Please enter a valid age.")
+        return value
+    
+    def validate_favorite_genres(self, value):
+        """Validate favorite_genres format"""
+        if not isinstance(value, dict):
+            raise serializers.ValidationError("favorite_genres must be a dictionary.")
+        
+        for genre_id, weight in value.items():
+            if not isinstance(weight, (int, float)):
+                raise serializers.ValidationError(
+                    f"Genre weight for '{genre_id}' must be a number."
+                )
+            if not 0 <= weight <= 1:
+                raise serializers.ValidationError(
+                    f"Genre weight for '{genre_id}' must be between 0 and 1."
+                )
+        
+        return value
+    
+    def validate_username(self, value):
+        """Ensure username is unique (excluding current user)"""
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+            raise serializers.ValidationError("This username is already taken.")
+        return value
+
+
+# ========== LOGOUT SERIALIZER ==========
+
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+
+class LogoutSerializer(serializers.Serializer):
+    """Serializer for logout - blacklists refresh token"""
+    refresh = serializers.CharField(required=False)
+    
+    def validate(self, attrs):
+        """Validate and blacklist refresh token if provided"""
+        self.token = attrs.get('refresh')
+        return attrs
+    
+    def save(self, **kwargs):
+        """Blacklist the refresh token"""
+        if self.token:
+            try:
+                token = RefreshToken(self.token)
+                token.blacklist()
+            except TokenError:
+                raise serializers.ValidationError('Invalid or expired token')
+        return {}

@@ -18,15 +18,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from movies.views import search_movies
+from rest_framework_simplejwt.views import TokenRefreshView  # ← ADICIONAR
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('authentication.urls')),
+    path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # ← ADICIONAR
     path('api/movies/', include('movies.urls')),
     path('api/movies/', include('ratings.urls')),
     path('api/search/', search_movies, name='search'),
     path('api/recommendations/', include('recommendations.urls')),
-    path('api/watchlist/', include('watchlist.urls')),  # ← Add this
+    path('api/watchlist/', include('watchlist.urls')),
 ]
 
 

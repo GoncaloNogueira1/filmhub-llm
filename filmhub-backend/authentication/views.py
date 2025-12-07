@@ -1,8 +1,15 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
-from .serializers import RegisterSerializer, LoginSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.db import models
+from .serializers import (
+    RegisterSerializer, 
+    LoginSerializer,
+    UserProfileSerializer,
+    UserProfileUpdateSerializer
+)
 
 
 class RegisterView(APIView):
@@ -26,7 +33,8 @@ class RegisterView(APIView):
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class LoginView(APIView):
     """API endpoint for user login"""
     permission_classes = [AllowAny]
@@ -44,4 +52,156 @@ class LoginView(APIView):
         return Response(
             serializer.errors,
             status=status.HTTP_401_UNAUTHORIZED
+        )
+
+
+# ========== PROFILE VIEWS ==========
+
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    """
+    GET: Retrieve current user's profile
+    PATCH: Update current user's profile
+    
+    GET /api/auth/profile/
+    PATCH /api/auth/profile/
+    Body: {
+        "first_name": "John",
+        "last_name": "Doe",
+        "age": 25,
+        "bio": "Movie enthusiast",
+        "favorite_genres": {"28": 0.9, "18": 0.6},
+        "email_notifications": true
+    }
+    """
+    user = request.user
+    
+    if request.method == 'GET':
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    elif request.method == 'PATCH':
+        serializer = UserProfileUpdateSerializer(
+            user,
+            data=request.data,
+            partial=True,  # Allow partial updates
+            context={'request': request}
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
+            
+            # Return updated profile
+            response_serializer = UserProfileSerializer(user)
+            return Response({
+                'message': 'Profile updated successfully',
+                'profile': response_serializer.data
+            }, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_statistics(request):
+    """
+    Get user's movie statistics
+    
+    GET /api/auth/profile/stats/
+    """
+    from ratings.models import Rating
+    from watchlist.models import Watchlist
+    from collections import Counter
+    
+    user = request.user
+    
+    # Get statistics
+    total_ratings = Rating.objects.filter(user=user).count()
+    avg_rating = Rating.objects.filter(user=user).aggregate(
+        avg=models.Avg('score')
+    )['avg'] or 0
+    
+    watchlist_count = Watchlist.objects.filter(user=user).count()
+    
+    # Get favorite genres from ratings
+    rated_movies = Rating.objects.filter(
+        user=user,
+        score__gte=4
+    ).select_related('movie')
+    
+    genre_counts = Counter()
+    for rating in rated_movies:
+        for genre in rating.movie.genres:
+            genre_counts[genre] += 1
+    
+    top_genres = [
+        {'genre': genre, 'count': count}
+        for genre, count in genre_counts.most_common(5)
+    ]
+    
+    return Response({
+        'total_ratings': total_ratings,
+        'average_rating': round(avg_rating, 2),
+        'watchlist_count': watchlist_count,
+        'top_genres': top_genres,
+    }, status=status.HTTP_200_OK)
+
+
+# Legacy function-based views for compatibility
+def register_user(request):
+    """Wrapper for RegisterView"""
+    return RegisterView.as_view()(request)
+
+
+def login_user(request):
+    """Wrapper for LoginView"""
+    return LoginView.as_view()(request)
+
+
+# ========== LOGOUT VIEW ==========
+
+from .serializers import LogoutSerializer
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    """
+    Logout user by blacklisting refresh token
+    
+    POST /api/auth/logout/
+    Body (optional): {"refresh": "refresh_token_here"}
+    """
+    refresh_token = request.data.get('refresh')
+    
+    if refresh_token:
+        # Try to blacklist the token
+        serializer = LogoutSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    'message': 'Successfully logged out',
+                    'detail': 'Refresh token has been blacklisted.'
+                },
+                status=status.HTTP_205_RESET_CONTENT
+            )
+        else:
+            # Invalid token, but still logout
+            return Response(
+                {
+                    'message': 'Logged out',
+                    'detail': 'Invalid token provided, but logged out anyway.'
+                },
+                status=status.HTTP_205_RESET_CONTENT
+            )
+    else:
+        # No refresh token provided
+        return Response(
+            {
+                'message': 'Logged out',
+                'detail': 'No refresh token provided.'
+            },
+            status=status.HTTP_205_RESET_CONTENT
         )
