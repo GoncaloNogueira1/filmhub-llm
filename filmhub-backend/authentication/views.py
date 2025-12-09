@@ -3,7 +3,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.db import models
+from django.db import models, connection
+from django.http import JsonResponse
+from django.utils import timezone
+import logging
 from .serializers import (
     RegisterSerializer, 
     LoginSerializer,
@@ -196,3 +199,34 @@ def logout_view(request):
         },
         status=status.HTTP_205_RESET_CONTENT
     )
+
+
+logger = logging.getLogger(__name__)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def health_check(request):
+    """Health check endpoint for monitoring"""
+    try:
+        # Test database connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+        
+        response_data = {
+            "status": "healthy",
+            "database": "connected",
+            "timestamp": timezone.now().isoformat()
+        }
+        logger.info("Health check passed")
+        return JsonResponse(response_data, status=200)
+        
+    except Exception as e:
+        logger.error(f"Health check failed: {str(e)}")
+        response_data = {
+            "status": "unhealthy",
+            "database": "disconnected",
+            "error": str(e),
+            "timestamp": timezone.now().isoformat()
+        }
+        return JsonResponse(response_data, status=503)

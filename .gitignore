@@ -1,0 +1,65 @@
+# Environment variables - CRÍTICO!
+.env
+.env.local
+.env.*.local
+*.env
+!*.env.example
+
+# Backend Python
+filmhub-backend/__pycache__/
+filmhub-backend/**/__pycache__/
+filmhub-backend/*.py[cod]
+filmhub-backend/*$py.class
+filmhub-backend/*.so
+filmhub-backend/.Python
+filmhub-backend/venv/
+filmhub-backend/env/
+filmhub-backend/ENV/
+filmhub-backend/.venv/
+filmhub-backend/*.log
+filmhub-backend/db.sqlite3
+filmhub-backend/db.sqlite3-journal
+filmhub-backend/.pytest_cache/
+filmhub-backend/.coverage
+filmhub-backend/htmlcov/
+filmhub-backend/dist/
+filmhub-backend/build/
+filmhub-backend/*.egg-info/
+
+# Frontend Node (já tem .gitignore mas por segurança)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.cache/
+frontend/coverage/
+frontend/.nyc_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.bak
+*.cache

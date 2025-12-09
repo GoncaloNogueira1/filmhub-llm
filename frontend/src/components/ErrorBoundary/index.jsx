@@ -1,6 +1,6 @@
 import React from 'react';
-import Layout from './Layout';
-import Button from './ui/Button';
+import Layout from '../Layout';
+import Button from '../ui/Button';
 import './ErrorBoundary.css';
 
 class ErrorBoundary extends React.Component {
@@ -14,7 +14,21 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
+    const errorLog = {
+      timestamp: new Date().toISOString(),
+      error: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      userAgent: navigator.userAgent,
+      url: window.location.href
+    };
+    
+    // Structured JSON logging
+    console.error('ErrorBoundary:', JSON.stringify(errorLog, null, 2));
+    
+    // Also log to console for debugging
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
     this.setState({
       error,
       errorInfo

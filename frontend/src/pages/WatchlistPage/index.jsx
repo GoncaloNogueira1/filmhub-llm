@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import MovieCard from '../components/MovieCard';
-import useWatchlistStore from '../stores/watchlistStore';
-import { useAuthStore } from '../stores/authStore';
-import Button from '../components/ui/Button';
+import MovieCard from '../../components/MovieCard';
+import useWatchlistStore from '../../stores/watchlistStore';
+import { useAuthStore } from '../../stores/authStore';
+import Button from '../../components/ui/Button';
 import './WatchlistPage.css';
 
 const WatchlistPage = () => {

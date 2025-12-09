@@ -15,6 +15,15 @@ jobs:
     name: Backend Tests & Linting
     runs-on: ubuntu-latest
     
+    env:
+      DB_NAME: filmhub_test_db
+      DB_USER: test_user
+      DB_PASSWORD: test_password
+      DB_HOST: localhost
+      DB_PORT: 5432
+      SECRET_KEY: test-secret-key-for-ci
+      DEBUG: 'False'
+    
     services:
       postgres:
         image: postgres:15-alpine
@@ -67,30 +76,13 @@ jobs:
 
       - name: Run Django migrations
         working-directory: ./filmhub-backend
-        env:
-          DB_NAME: filmhub_test_db
-          DB_USER: test_user
-          DB_PASSWORD: test_password
-          DB_HOST: localhost
-          DB_PORT: 5432
-          SECRET_KEY: test-secret-key-for-ci
-          DEBUG: 'False'
         run: |
           python manage.py migrate --noinput
 
       - name: Run pytest
         working-directory: ./filmhub-backend
-        env:
-          DB_NAME: filmhub_test_db
-          DB_USER: test_user
-          DB_PASSWORD: test_password
-          DB_HOST: localhost
-          DB_PORT: 5432
-          SECRET_KEY: test-secret-key-for-ci
-          DEBUG: 'False'
         run: |
           pytest --cov=. --cov-report=xml --cov-report=term-missing
-        continue-on-error: true
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -126,7 +118,12 @@ jobs:
 
       - name: Run tests
         working-directory: ./frontend
-        run: npm test -- --run || echo "No tests configured yet"
+        run: |
+          if npm list vitest > /dev/null 2>&1; then
+            npm test -- --run
+          else
+            echo "⚠️ Vitest not installed, skipping tests"
+          fi
         continue-on-error: true
 
       - name: Build frontend
@@ -150,6 +147,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml
+        run: |
+          docker-compose -f docker-compose.yml config > /dev/null
+          echo "✅ docker-compose.yml is valid"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -175,16 +177,3 @@ jobs:
           cache-to: type=gha,mode=max
 
   # TODO: Add deployment job here
-  # deploy:
-  #   name: Deploy to Production
-  #   runs-on: ubuntu-latest
-  #   needs: [backend-tests, frontend-tests, docker-build]
-  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-  #   steps:
-  #     - name: Placeholder for deployment
-  #       run: echo "Deployment will be configured later"
-  #     # Future steps:
-  #     # - Deploy to cloud provider (AWS, DigitalOcean, etc.)
-  #     # - Push Docker images to registry
-  #     # - Run database migrations on production
-  #     # - Update container orchestration (ECS, Kubernetes, etc.)

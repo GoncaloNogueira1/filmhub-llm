@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import useAuthStore from '../stores/authStore';
-import useWatchlistStore from '../stores/watchlistStore';
+import useAuthStore from '../../stores/authStore';
+import useWatchlistStore from '../../stores/watchlistStore';
 import { Link, useNavigate } from 'react-router-dom';
-import Button from './ui/Button';
-import authAPI from '../api/auth';
+import Button from '../ui/Button';
+import authAPI from '../../api/auth';
 import './Navbar.css';
 
 const Navbar = () => {

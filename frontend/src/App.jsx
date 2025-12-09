@@ -14,8 +14,8 @@ import NotFound from './pages/NotFound';
 
 function App() {
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ErrorBoundary>
         <Routes>
           {/* Public routes - No Layout */}
           <Route path="/login" element={<LoginPage />} />
@@ -86,8 +86,8 @@ function App() {
             }
           />
         </Routes>
-      </BrowserRouter>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </BrowserRouter>
   );
 }
 

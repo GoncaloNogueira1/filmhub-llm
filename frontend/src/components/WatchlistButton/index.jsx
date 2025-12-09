@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAuthStore } from '../stores/authStore';
-import useWatchlistStore from '../stores/watchlistStore';
+import { useAuthStore } from '../../stores/authStore';
+import useWatchlistStore from '../../stores/watchlistStore';
 import './WatchlistButton.css';
 
 const WatchlistButton = ({ movieId, className = '', size = 'sm' }) => {

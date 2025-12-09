@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import authAPI from '../../api/auth';
-import '../RegisterPage.css';
+import Navbar from '../../components/Navbar';
+import './RegisterPage.css';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -109,130 +110,107 @@ const RegisterPage = () => {
 
   return (
     <div className="register-page">
+      <Navbar />
       <div className="register-container">
-        <div className="register-header">
-          <h1 className="register-title">🎬 FilmHub</h1>
-          <h2 className="register-subtitle">Create Account</h2>
-          <p className="register-description">Join FilmHub to discover your next favorite movie</p>
+        <div className="register-card">
+          <h2 className="register-title">Create Account</h2>
+          
+          {successMessage && (
+            <div className="register-success">
+              {successMessage}
+            </div>
+          )}
+
+          {errors.general && (
+            <div className="register-error">
+              {errors.general}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="register-form">
+            <div className="register-field">
+              <label className="register-label">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="email@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                className="register-input"
+                autoComplete="email"
+              />
+              {errors.email && (
+                <p className="register-field-error">{errors.email}</p>
+              )}
+            </div>
+
+            <div className="register-field">
+              <label className="register-label">Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                className="register-input"
+                autoComplete="new-password"
+              />
+              {errors.password && (
+                <p className="register-field-error">{errors.password}</p>
+              )}
+            </div>
+
+            <div className="register-field">
+              <label className="register-label">Confirm Password</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="••••••••"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="register-input"
+                autoComplete="new-password"
+              />
+              {errors.confirmPassword && (
+                <p className="register-field-error">{errors.confirmPassword}</p>
+              )}
+            </div>
+
+            <div className="register-field">
+              <label className="register-label">Age (Optional)</label>
+              <input
+                type="number"
+                name="age"
+                placeholder="25"
+                min="13"
+                max="120"
+                value={formData.age}
+                onChange={handleChange}
+                className="register-input"
+              />
+              {errors.age && (
+                <p className="register-field-error">{errors.age}</p>
+              )}
+            </div>
+
+            <button type="submit" disabled={isLoading} className="register-button">
+              {isLoading ? 'Creating account...' : 'Create Account'}
+            </button>
+
+            <div className="register-footer">
+              <p>
+                Already have an account?{' '}
+                <button 
+                  type="button"
+                  onClick={() => navigate('/login')}
+                  className="register-link"
+                >
+                  Sign in
+                </button>
+              </p>
+            </div>
+          </form>
         </div>
-
-        {successMessage && (
-          <div className="register-message success">
-            {successMessage}
-          </div>
-        )}
-
-        {errors.general && (
-          <div className="register-message error">
-            {errors.general}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="register-form">
-          <div className="register-field">
-            <label htmlFor="email" className="register-label">
-              Email Address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`register-input ${errors.email ? 'error' : ''}`}
-              placeholder="you@example.com"
-            />
-            {errors.email && (
-              <p className="register-field-error">{errors.email}</p>
-            )}
-          </div>
-
-          <div className="register-field">
-            <label htmlFor="password" className="register-label">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`register-input ${errors.password ? 'error' : ''}`}
-              placeholder="••••••••"
-            />
-            {errors.password && (
-              <p className="register-field-error">{errors.password}</p>
-            )}
-          </div>
-
-          <div className="register-field">
-            <label htmlFor="confirmPassword" className="register-label">
-              Confirm Password
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={`register-input ${errors.confirmPassword ? 'error' : ''}`}
-              placeholder="••••••••"
-            />
-            {errors.confirmPassword && (
-              <p className="register-field-error">{errors.confirmPassword}</p>
-            )}
-          </div>
-
-          <div className="register-field">
-            <label htmlFor="age" className="register-label">
-              Age (Optional)
-            </label>
-            <input
-              id="age"
-              name="age"
-              type="number"
-              min="13"
-              max="120"
-              value={formData.age}
-              onChange={handleChange}
-              className={`register-input ${errors.age ? 'error' : ''}`}
-              placeholder="25"
-            />
-            {errors.age && (
-              <p className="register-field-error">{errors.age}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="register-submit"
-          >
-            {isLoading ? (
-              <span className="register-submit-loading">
-                <svg className="register-submit-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Creating account...
-              </span>
-            ) : (
-              'Create Account'
-            )}
-          </button>
-
-          <div className="register-footer">
-            <p className="register-footer-text">
-              Already have an account?{' '}
-              <Link to="/login" className="register-footer-link">
-                Sign in
-              </Link>
-            </p>
-          </div>
-        </form>
       </div>
     </div>
   );

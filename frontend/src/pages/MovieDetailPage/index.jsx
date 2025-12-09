@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useMoviesStore } from '../stores/moviesStore';
-import { getMovieDetail } from '../api/movies';
-import ratingsAPI from '../api/ratings';
-import RatingForm from '../components/RatingForm';
-import WatchlistButton from '../components/WatchlistButton';
+import { useMoviesStore } from '../../stores/moviesStore';
+import { getMovieDetail } from '../../api/movies';
+import ratingsAPI from '../../api/ratings';
+import RatingForm from '../../components/RatingForm';
+import WatchlistButton from '../../components/WatchlistButton';
 import './MovieDetailPage.css';
 
 const MovieDetailPage = () => {

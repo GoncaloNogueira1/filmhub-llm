@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ratingsAPI from '../api/ratings';
+import ratingsAPI from '../../api/ratings';
 
 const RatingForm = ({ movieId, onRatingSubmitted }) => {
   const [rating, setRating] = useState(0);

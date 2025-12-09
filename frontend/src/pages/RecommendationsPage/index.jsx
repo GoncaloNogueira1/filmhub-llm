@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import MovieCard from '../components/MovieCard';
-import recommendationsAPI from '../api/recommendations';
+import MovieCard from '../../components/MovieCard';
+import recommendationsAPI from '../../api/recommendations';
 import './RecommendationsPage.css';
 
 const RecommendationsPage = () => {

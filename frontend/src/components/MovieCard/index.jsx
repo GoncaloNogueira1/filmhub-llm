@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import WatchlistButton from './WatchlistButton';
+import WatchlistButton from '../WatchlistButton';
 import './MovieCard.css';
 
 const MovieCard = ({ movie }) => {

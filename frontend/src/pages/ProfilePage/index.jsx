@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../stores/authStore';
-import authAPI from '../api/auth';
+import useAuthStore from '../../stores/authStore';
+import authAPI from '../../api/auth';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
-  const [profile, setProfile] = useState({ name: '', age: '', genre_preferences: {} });
+  const [profile, setProfile] = useState({ 
+    first_name: '', 
+    last_name: '', 
+    age: '', 
+    favorite_genres: {} 
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -23,7 +28,13 @@ const ProfilePage = () => {
   const fetchProfile = async () => {
     try {
       const data = await authAPI.getProfile();
-      setProfile(data);
+      // Map API fields to component state
+      setProfile({
+        first_name: data.first_name || '',
+        last_name: data.last_name || '',
+        age: data.age || '',
+        favorite_genres: data.favorite_genres || {}
+      });
     } catch (error) {
       console.error('Failed to fetch profile:', error);
     } finally {
@@ -37,9 +48,10 @@ const ProfilePage = () => {
     setMessage('');
     try {
       await authAPI.updateProfile({
-        name: profile.name,
+        first_name: profile.first_name,
+        last_name: profile.last_name,
         age: profile.age,
-        genre_preferences: profile.genre_preferences
+        favorite_genres: profile.favorite_genres
       });
       setMessage('Profile updated successfully!');
       fetchProfile();
@@ -54,8 +66,8 @@ const ProfilePage = () => {
   const handleGenreChange = (genreId, value) => {
     setProfile(prev => ({
       ...prev,
-      genre_preferences: {
-        ...prev.genre_preferences,
+      favorite_genres: {
+        ...(prev.favorite_genres || {}),
         [genreId]: parseFloat(value)
       }
     }));
@@ -86,14 +98,24 @@ const ProfilePage = () => {
 
         <form onSubmit={handleSubmit} className="profile-form">
           <div className="profile-field">
-            <label className="profile-label">Name</label>
+            <label className="profile-label">First Name</label>
             <input
               type="text"
-              value={profile.name}
-              onChange={(e) => setProfile({...profile, name: e.target.value})}
+              value={profile.first_name}
+              onChange={(e) => setProfile({...profile, first_name: e.target.value})}
               className="profile-input"
-              placeholder="Enter your name"
-              required
+              placeholder="Enter your first name"
+            />
+          </div>
+
+          <div className="profile-field">
+            <label className="profile-label">Last Name</label>
+            <input
+              type="text"
+              value={profile.last_name}
+              onChange={(e) => setProfile({...profile, last_name: e.target.value})}
+              className="profile-input"
+              placeholder="Enter your last name"
             />
           </div>
 
@@ -123,11 +145,11 @@ const ProfilePage = () => {
                       min="0"
                       max="1"
                       step="0.1"
-                      value={profile.genre_preferences[genre.id] || 0}
+                      value={profile.favorite_genres?.[genre.id] || 0}
                       onChange={(e) => handleGenreChange(genre.id, e.target.value)}
                       className="profile-genre-slider"
                     />
-                    <span className="profile-genre-value">{(profile.genre_preferences[genre.id] || 0).toFixed(1)}</span>
+                    <span className="profile-genre-value">{(profile.favorite_genres?.[genre.id] || 0).toFixed(1)}</span>
                   </div>
                 </div>
               ))}

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
-import { useMoviesStore } from '../stores/moviesStore';
-import SearchBar from '../components/SearchBar';
-import MovieCard from '../components/MovieCard';
+import { useMoviesStore } from '../../stores/moviesStore';
+import SearchBar from '../../components/SearchBar';
+import MovieCard from '../../components/MovieCard';
 import './MoviesPage.css';
 
 const MoviesPage = () => {
