@@ -150,7 +150,7 @@ jobs:
 
       - name: Validate docker-compose.yml
         run: |
-          docker-compose -f docker-compose.yml config > /dev/null
+          docker compose -f docker-compose.yml config > /dev/null
           echo "✅ docker-compose.yml is valid"
 
       - name: Set up Docker Buildx
