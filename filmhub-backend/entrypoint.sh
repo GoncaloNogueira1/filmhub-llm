@@ -28,6 +28,6 @@ else
   echo "✅ Database already has $MOVIE_COUNT movies. Skipping import."
 fi
 
-echo "🎬 Starting Django development server..."
+echo "🎬 Starting Django application..."
 exec "$@"
 

@@ -1,16 +1,27 @@
-FROM node:20-alpine
+# Build stage
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+RUN npm ci --only=production=false
 
-# Copy project files
+# Copy source and build (VITE_API_BASE_URL must be set at build time)
 COPY . .
 
-EXPOSE 5173
+RUN npm run build
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
+# Production stage
+FROM node:20-alpine AS runner
+
+RUN npm install -g serve@14.2.1
+
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3000
+
+# Serve production build
+CMD ["serve", "-s", "dist", "-l", "3000", "--single"]

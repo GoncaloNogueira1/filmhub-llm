@@ -8,3 +8,4 @@ pytest
 pytest-django
 pytest-cov
 requests
+gunicorn==22.0.0
