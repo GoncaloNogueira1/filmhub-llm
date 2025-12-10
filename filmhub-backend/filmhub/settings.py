@@ -84,18 +84,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CSRF Configuration for API
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5174',
-]
+# CSRF Configuration for API - use environment variable for production
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174',
+    cast=lambda v: [s.strip() for s in v.split(',') if s.strip()]
+)
 
 # For API endpoints using JWT, CSRF is not needed since we're not using session auth
-CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+# Set to True in production with HTTPS
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
 CSRF_COOKIE_HTTPONLY = False  # Frontend needs to read CSRF token
-CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = config('CSRF_COOKIE_SAMESITE', default='Lax')
 
 
 ROOT_URLCONF = "filmhub.urls"
@@ -181,7 +181,7 @@ CORS_ALLOWED_ORIGINS = config(
     default='http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174',
     cast=lambda v: [s.strip() for s in v.split(',') if s.strip()]
 )
-# For development only - remove in production
+# Allow credentials for CORS (needed for cookies/auth)
 CORS_ALLOW_CREDENTIALS = True
 
 # Update REST_FRAMEWORK settings

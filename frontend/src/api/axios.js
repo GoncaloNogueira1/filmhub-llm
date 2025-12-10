@@ -1,7 +1,8 @@
 import axios from 'axios';
 import useAuthStore from '../stores/authStore';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+// Use environment variable with fallback for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
 // Create axios instance
 const apiClient = axios.create({
@@ -43,8 +44,9 @@ apiClient.interceptors.response.use(
         }
 
         // Try to refresh token
+        const refreshUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
         const response = await axios.post(
-          `${API_BASE_URL}/auth/token/refresh/`,
+          `${refreshUrl}/auth/token/refresh/`,
           { refresh: refreshToken }
         );
 
