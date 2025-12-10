@@ -181,16 +181,30 @@ def logout_view(request):
     serializer = LogoutSerializer(data=request.data)
     
     if serializer.is_valid():
+        refresh_token = request.data.get('refresh')
         serializer.save()
-        return Response(
-            {
-                'message': 'Successfully logged out',
-                'detail': 'Refresh token has been blacklisted. Please remove tokens from client storage.'
-            },
-            status=status.HTTP_205_RESET_CONTENT
-        )
+        
+        # Check if refresh token was provided
+        if refresh_token:
+            return Response(
+                {
+                    'message': 'Successfully logged out',
+                    'detail': 'Refresh token has been blacklisted. Please remove tokens from client storage.'
+                },
+                status=status.HTTP_205_RESET_CONTENT
+            )
+        else:
+            # If no refresh token provided, still return success
+            # (user deleted tokens on frontend)
+            return Response(
+                {
+                    'message': 'Logged out',
+                    'detail': 'No refresh token provided. Ensure tokens are removed from client.'
+                },
+                status=status.HTTP_205_RESET_CONTENT
+            )
     
-    # If no refresh token provided, still return success
+    # If serializer is invalid, still return success
     # (user deleted tokens on frontend)
     return Response(
         {
