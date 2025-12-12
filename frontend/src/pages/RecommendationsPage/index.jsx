@@ -33,11 +33,11 @@ const RecommendationsPage = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center justify-center py-32">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-3 border-blue-500 border-t-transparent mb-4"></div>
-            <p className="text-gray-300">Loading recommendations...</p>
+      <div className="recommendations-page">
+        <div className="recommendations-loading">
+          <div className="recommendations-loading-content">
+            <div className="recommendations-spinner"></div>
+            <p className="recommendations-loading-text">Loading recommendations...</p>
           </div>
         </div>
       </div>
@@ -46,12 +46,12 @@ const RecommendationsPage = () => {
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="text-center py-32">
-          <p className="text-red-400 text-lg mb-4">{error}</p>
+      <div className="recommendations-page">
+        <div className="recommendations-error">
+          <p className="recommendations-error-text">{error}</p>
           <button
             onClick={fetchRecommendations}
-            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+            className="recommendations-error-button"
           >
             Try again
           </button>

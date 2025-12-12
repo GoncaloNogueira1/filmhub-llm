@@ -1,4 +1,5 @@
 import React from 'react';
+import './Input.css';
 
 const Input = ({ 
   label, 
@@ -6,20 +7,20 @@ const Input = ({
   className = '', 
   ...props 
 }) => (
-  <div className="relative group">
+  <div className="input-group">
     {label && (
-      <label className="absolute -top-3 left-3 px-2 text-sm text-white/80 bg-slate-900/50 backdrop-blur-sm rounded-md transition-all group-focus-within:text-blue-400">
+      <label className="input-label">
         {label}
       </label>
     )}
-    <div className="relative">
+    <div className="input-wrapper">
       {iconBefore && (
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <div className="input-icon-before">
           {iconBefore}
         </div>
       )}
       <input
-        className={`w-full px-4 py-5 ${iconBefore ? 'pl-12' : ''} pr-12 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-300 text-lg input-focus transition-all group-hover:border-white/40 peer ${className}`}
+        className={`input-field ${iconBefore ? 'input-with-icon' : ''} ${className}`}
         {...props}
       />
     </div>

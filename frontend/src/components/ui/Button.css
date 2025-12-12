@@ -1,0 +1,95 @@
+.button {
+  font-weight: 600;
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.button:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+/* Variants */
+.button-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: 0;
+}
+
+.button-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+}
+
+.button-secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.button-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.button-danger {
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  border: 0;
+}
+
+.button-danger:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 1);
+}
+
+/* Sizes */
+.button-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.button-md {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+.button-lg {
+  padding: 1.25rem 3rem;
+  font-size: 1.25rem;
+}
+
+/* Loading spinner */
+.button-spinner {
+  animation: spin 1s linear infinite;
+  margin-left: -0.25rem;
+  height: 1rem;
+  width: 1rem;
+}
+
+.button-spinner circle {
+  opacity: 0.25;
+}
+
+.button-spinner path {
+  opacity: 0.75;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
