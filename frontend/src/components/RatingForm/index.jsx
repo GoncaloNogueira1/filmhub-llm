@@ -25,7 +25,7 @@ const RatingForm = ({ movieId, onRatingSubmitted }) => {
       } catch (err) {
         // Only log non-404 errors (404 is expected when user hasn't rated)
         if (err.response?.status !== 404) {
-          console.error('Error loading user rating:', err);
+        console.error('Error loading user rating:', err);
         }
       } finally {
         setLoading(false);
@@ -93,31 +93,31 @@ const RatingForm = ({ movieId, onRatingSubmitted }) => {
           <label className="rating-label">Rating</label>
           <div className="rating-controls">
             <div className="rating-stars-container">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => handleStarClick(value)}
-                  onMouseEnter={() => setHoveredRating(value)}
-                  onMouseLeave={() => setHoveredRating(0)}
+            {[1, 2, 3, 4, 5].map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => handleStarClick(value)}
+                onMouseEnter={() => setHoveredRating(value)}
+                onMouseLeave={() => setHoveredRating(0)}
                   className="rating-star-button"
-                  aria-label={`Rate ${value} star${value !== 1 ? 's' : ''}`}
-                >
-                  <svg
+                aria-label={`Rate ${value} star${value !== 1 ? 's' : ''}`}
+              >
+                <svg
                     className={`rating-star ${
-                      value <= (hoveredRating || rating)
+                    value <= (hoveredRating || rating)
                         ? 'active'
                         : 'inactive'
                     } ${hoveredRating >= value ? 'hovered' : ''}`}
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
                     stroke="currentColor"
                     strokeWidth="0.5"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                </button>
-              ))}
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </button>
+            ))}
             </div>
             {rating > 0 && (
               <span className="rating-value-badge">

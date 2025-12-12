@@ -27,7 +27,7 @@ if [ "$MOVIE_COUNT" = "0" ]; then
 elif [ "$MOVIE_COUNT" -lt 100 ]; then
   echo "📽️  Found $MOVIE_COUNT movies (less than 100). Importing more to reach ~300 movies..."
   # Calculate pages needed: (300 - current) / 20 per page, rounded up
-  PAGES_NEEDED=$(( (300 - MOVIE_COUNT + 19) / 20 ))
+  PAGES_NEEDED=$(( (300 - MOVIE_COUNT + 19) / 20 ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
   # Cap at 20 pages to avoid too long imports
   if [ "$PAGES_NEEDED" -gt 20 ]; then
     PAGES_NEEDED=20
