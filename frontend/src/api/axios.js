@@ -32,6 +32,21 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Suppress console errors for expected 404s (e.g., my-rating endpoint)
+    const isExpected404 = error.response?.status === 404 && 
+                         originalRequest.url?.includes('/my-rating/');
+    
+    if (!isExpected404 && error.response) {
+      // Only log unexpected errors
+      const errorMessage = error.response?.data?.detail || error.message;
+      if (error.response.status >= 500) {
+        console.error('Server error:', errorMessage);
+      } else if (error.response.status !== 404) {
+        // Log non-404 client errors (but not expected 404s)
+        console.warn('API error:', errorMessage);
+      }
+    }
+
     // If 401 and not already retried, try to refresh token
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;

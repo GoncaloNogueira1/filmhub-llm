@@ -63,3 +63,10 @@ logs/
 *.tmp
 *.bak
 *.cache
+
+# Test/debug files with sensitive data
+*_login.json
+login.json
+reco_login.json
+*.credentials.json
+*.tokens.json

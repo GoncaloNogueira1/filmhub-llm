@@ -15,16 +15,18 @@ const ratingsAPI = {
   /**
    * Get current user's rating for a movie
    * @param {number} movieId - Movie ID
-   * @returns {Promise}
+   * @returns {Promise<Object|null>} Returns rating object or null if not rated
    */
   getUserRating: async (movieId) => {
     try {
       const response = await apiClient.get(`/movies/${movieId}/my-rating/`);
       return response.data;
     } catch (error) {
+      // 404 is expected when user hasn't rated the movie - return null silently
       if (error.response?.status === 404) {
-        return null; // User hasn't rated this movie
+        return null;
       }
+      // Re-throw other errors
       throw error;
     }
   },
