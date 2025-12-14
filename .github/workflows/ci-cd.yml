@@ -257,7 +257,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
       name: production
-      url: https://filmhub-backend-llm.onrender.com
+      url: https://filmhub-frontend-llm.onrender.com
 
     steps:
       - name: Trigger Render backend deployment
