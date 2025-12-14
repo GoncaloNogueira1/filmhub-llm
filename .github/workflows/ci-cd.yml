@@ -82,15 +82,7 @@ jobs:
       - name: Run pytest
         working-directory: ./filmhub-backend
         run: |
-          pytest --cov=. --cov-report=xml --cov-report=term-missing
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./filmhub-backend/coverage.xml
-          flags: backend
-          name: backend-coverage
-        continue-on-error: true
+          pytest --cov=. --cov-report=term-missing
 
   frontend-tests:
     name: Frontend Build & Tests
