@@ -5,9 +5,9 @@ services:
     image: postgres:15-alpine
     container_name: filmhub_db
     environment:
-      POSTGRES_DB: ${DB_NAME:-filmhub_db}
-      POSTGRES_USER: ${DB_USER:-filmhub_user}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-filmhub_password}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -30,12 +30,14 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DB_NAME=${DB_NAME:-filmhub_db}
-      - DB_USER=${DB_USER:-filmhub_user}
-      - DB_PASSWORD=${DB_PASSWORD:-filmhub_password}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
       - DB_HOST=db
       - DB_PORT=5432
       - DEBUG=${DEBUG:-True}
+      - SECRET_KEY=${SECRET_KEY}
+      - TMDB_API_KEY=${TMDB_API_KEY}
     depends_on:
       db:
         condition: service_healthy
