@@ -129,8 +129,9 @@ const RegisterPage = () => {
 
           <form onSubmit={handleSubmit} className="register-form">
             <div className="register-field">
-              <label className="register-label">Email</label>
+              <label htmlFor="email" className="register-label">Email Address</label>
               <input
+                id="email"
                 type="email"
                 name="email"
                 placeholder="email@example.com"
@@ -145,8 +146,9 @@ const RegisterPage = () => {
             </div>
 
             <div className="register-field">
-              <label className="register-label">Password</label>
+              <label htmlFor="password" className="register-label">Password</label>
               <input
+                id="password"
                 type="password"
                 name="password"
                 placeholder="••••••••"
@@ -161,8 +163,9 @@ const RegisterPage = () => {
             </div>
 
             <div className="register-field">
-              <label className="register-label">Confirm Password</label>
+              <label htmlFor="confirmPassword" className="register-label">Confirm Password</label>
               <input
+                id="confirmPassword"
                 type="password"
                 name="confirmPassword"
                 placeholder="••••••••"
